@@ -1,0 +1,15 @@
+#game-container {
+  display: grid;
+  grid-template-columns: repeat(4, 160px);
+  gap: 0.2rem;
+  margin-top: 1rem;
+  justify-content: center;
+}
+
+.board-element {
+  width: 160px;
+  height: 160px;
+  background-color: grey;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
