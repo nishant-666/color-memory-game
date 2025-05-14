@@ -5,6 +5,10 @@ const gameContainer = document.getElementById("game-container");
 let rows = 0;
 let gameBoardArray = [];
 
+let selectedCells = [];
+
+gameContainer.innerHTML = "";
+
 boxInput.addEventListener("input", (event) => {
   rows = Number(event.target.value);
 });
@@ -45,12 +49,49 @@ startButton.addEventListener("click", () => {
     for (let j = 0; j < columns; j++) {
       const boardCell = document.createElement("div");
       boardCell.classList.add("board-element");
-      //   boardCell.style.backgroundColor = gameBoardArray[i][j];
       boardCell.style.backgroundColor = "grey";
+      boardCell.dataset.row = i;
+      boardCell.dataset.col = j;
+      boardCell.dataset.revealed = "false";
 
       boardCell.addEventListener("click", () => {
-        boardCell.style.backgroundColor = gameBoardArray[i][j];
+        const row = boardCell.dataset.row;
+        const col = boardCell.dataset.col;
+
+        // Ignore clicks on already matched cells
+        if (boardCell.dataset.revealed === "true" || selectedCells.length === 2)
+          return;
+
+        boardCell.style.backgroundColor = gameBoardArray[row][col];
+
+        selectedCells.push({
+          cell: boardCell,
+          color: gameBoardArray[row][col],
+        });
+
+        console.log(selectedCells);
+
+        if (selectedCells.length === 2) {
+          const [first, second] = selectedCells;
+
+          if (first.color === second.color) {
+            first.cell.dataset.revealed = "true";
+            second.cell.dataset.revealed = "true";
+          } else {
+            // Delay hiding unmatched cells
+            setTimeout(() => {
+              first.cell.style.backgroundColor = "grey";
+              second.cell.style.backgroundColor = "grey";
+            }, 500);
+          }
+
+          // Reset selection regardless
+          setTimeout(() => {
+            selectedCells = [];
+          }, 500);
+        }
       });
+
       gameContainer.appendChild(boardCell);
     }
   }
